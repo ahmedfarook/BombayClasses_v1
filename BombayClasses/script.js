@@ -28,7 +28,7 @@ function generate(){
         <div class="center small">Contact: 9819484931</div>
         <hr>
         <div class="line"><b>Date:</b> ${date}</div>
-        <div class="line"><b>Student:</b> ${name.value}</div>
+        <div class="line"><b>Student:</b> ${studentname.value}</div>
         <div class="line"><b>Standard:</b> ${standard.value}</div>
         <div class="line"><b>Payment For:</b> ${paymentfor.value}</div>
         <div class="line"><b>Amount:</b> ₹${amount.value}</div>
@@ -45,7 +45,7 @@ function downloadJPG(){
     if(receipt.classList.contains("hidden")) return alert("Generate first");
 
     html2canvas(receipt).then(canvas=>{
-        let file = `${name.value}_${paymentfor.value}.jpg`;
+        let file = `${studentname.value}_${paymentfor.value}.jpg`;
         let a = document.createElement("a");
         a.download = file;
         a.href = canvas.toDataURL("image/jpeg");
