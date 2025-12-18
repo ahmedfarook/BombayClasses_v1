@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Fees Receipt</title>
+
+<link rel="stylesheet" href="style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="script.js" defer></script>
+</head>
+
+<body>
+
+<div class="container">
+    <h1 class="center">BOMBAY COACHING CLASSES</h1>
+    <div class="center small">G101, Ashiyana Complex, Adajan Patiya, Surat</div>
+    <div class="center small">Contact: 9819484931</div>
+    <hr>
+
+    <h2>Fees Receipt</h2>
+
+    <label>Student Name</label>
+    <input type="text" id="name">
+
+    <label>Amount (INR)</label>
+    <input type="number" id="amount">
+
+    <label>Payment For</label>
+    <input type="text" id="paymentfor">
+
+    <label>Std</label>
+    <input type="text" id="standard">
+
+    <label>Mode of Payment</label>
+    <select id="mode">
+        <option>Cash</option>
+        <option>UPI</option>
+        <option>Bank Transfer</option>
+        <option>Cheque</option>
+    </select>
+
+    <label>Note</label>
+    <input type="text" id="note">
+
+    <div class="btn-row">
+        <button onclick="generate()">Generate</button>
+        <button onclick="downloadJPG()">JPG</button>
+        <button onclick="printReceipt()">Print</button>
+        <button onclick="openHistory()">History</button>
+    </div>
+
+    <div id="receipt" class="receipt hidden"></div>
+    <div id="historyPanel" class="hidden"></div>
+</div>
+
+</body>
+</html>
