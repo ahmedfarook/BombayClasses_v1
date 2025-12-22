@@ -2,19 +2,19 @@ const $ = id => document.getElementById(id);
 
 /* ========= GENERATE RECEIPT ========= */
 
-function generate(){
-    let required = ['studentname','amount','paymentfor','standard'];
+function generate() {
+    let required = ['studentname', 'amount', 'paymentfor', 'standard'];
     let ok = true;
 
-    required.forEach(id=>{
+    required.forEach(id => {
         let el = $(id);
-        if(!el.value.trim()){
+        if (!el.value.trim()) {
             el.classList.add('error');
             ok = false;
         } else el.classList.remove('error');
     });
 
-    if(!ok) return alert("Fill required fields");
+    if (!ok) return alert("Fill required fields");
 
     let date = new Date().toLocaleDateString('en-GB');
 
@@ -39,26 +39,61 @@ function generate(){
 
 /* ========= DOWNLOAD JPG ========= */
 
-function downloadJPG(){
-    let receipt = $("receipt");
-    if(receipt.classList.contains("hidden"))
-        return alert("Generate first");
+function generateAndUploadJPG() {
+    const receipt = document.getElementById("receipt");
 
-    let filename = `${$("studentname").value}_${$("paymentfor").value}.jpg`;
+    if (!receipt || receipt.classList.contains("hidden")) {
+        alert("Pehle receipt generate karo");
+        return;
+    }
 
-    html2canvas(receipt).then(canvas=>{
-        let a = document.createElement("a");
-        a.download = filename;
-        a.href = canvas.toDataURL("image/jpeg");
-        a.click();
+    html2canvas(receipt).then(canvas => {
+        // ---------- 1) LOCAL DOWNLOAD ----------
+        const fileName =
+            document.getElementById("studentname").value + "_receipt.jpg";
+
+        const downloadLink = document.createElement("a");
+        downloadLink.href = canvas.toDataURL("image/jpeg", 0.9);
+        downloadLink.download = fileName;
+        downloadLink.click();
+
+        // ---------- 2) UPLOAD TO WORKER ----------
+        const imageBase64 = canvas.toDataURL("image/jpeg", 0.9);
+
+        fetch("https://bombay-classes-api.ahmedgaziyani.workers.dev/save", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                student: document.getElementById("studentname").value,
+                amount: document.getElementById("amount").value,
+                mode: document.getElementById("mode").value,
+                image: imageBase64
+            })
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    console.log("Upload success:", data.imageUrl);
+                } else {
+                    alert("Upload failed");
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert("Upload error");
+            });
     });
 }
 
+
 /* ========= PRINT ========= */
 
-function printReceipt(){
+/* 
+function printReceipt() {
     let receipt = $("receipt");
-    if(receipt.classList.contains("hidden"))
+    if (receipt.classList.contains("hidden"))
         return alert("Generate first");
 
     let w = window.open("");
@@ -66,102 +101,81 @@ function printReceipt(){
     w.print();
     w.close();
 }
-
+*/
 /* ========= HISTORY (READ ONLY) ========= */
 
 let fullHistory = [];
 let historyIndex = 0;
+const PAGE_SIZE = 5;
 
-async function openHistory(){
-    let year = new Date().getFullYear();
-    let url = `https://raw.githubusercontent.com/ahmedfarook/BombayClasses/main/history/${year}.json`;
+async function openHistory() {
+    const year = new Date().getFullYear();
+    const panel = document.getElementById("historyPanel");
 
-    let panel = document.getElementById("historyPanel");
-    panel.style.display = "block";
     panel.innerHTML = "Loading...";
+    panel.style.display = "block";
 
-    try {
-        let response = await fetch(url);
-        if(!response.ok) throw new Error("History not found");
+    const res = await fetch(
+        `https://bombay-classes-api.ahmedgaziyani.workers.dev/history/${year}`
+    );
+    const data = await res.json();
 
-        let data = await response.json();
+    // latest first
+    fullHistory = data.reverse();
+    historyIndex = 0;
 
-        fullHistory = data.reverse();
-        historyIndex = 0;
-
-        renderHistoryTable();
-
-    } catch (e){
-        panel.innerHTML = "❌ No history found";
-        console.error(e);
-    }
+    renderHistory();
 }
 
-
-function renderHistoryTable(){
-    let panel = document.getElementById("historyPanel");
-
-    let rows = fullHistory.slice(0, historyIndex + 5);
-    historyIndex = rows.length;
+function renderHistory() {
+    const panel = document.getElementById("historyPanel");
 
     let html = `
-    <h3>${new Date().getFullYear()} - History</h3>
-    <table style="width:100%;border-collapse:collapse;font-size:14px;">
-      <thead>
-        <tr style="background:#f0f0f0;">
-          <th style="border:1px solid #ccc;padding:6px;">#</th>
-          <th style="border:1px solid #ccc;padding:6px;">Student</th>
-         <!-- <th style="border:1px solid #ccc;padding:6px;">Std</th> -->
-          <th style="border:1px solid #ccc;padding:6px;">Amount</th>
-         <!-- <th style="border:1px solid #ccc;padding:6px;">For</th> -->
-         <!-- <th style="border:1px solid #ccc;padding:6px;">Mode</th> -->
-          <th style="border:1px solid #ccc;padding:6px;">Date</th>
-          <th style="border:1px solid #ccc;padding:6px;">Receipt</th>
-        </tr>
-      </thead>
-      <tbody>
-    `;
+    <table border="1" width="100%" cellspacing="0" cellpadding="6">
+      <tr>
+        <th>#</th>
+        <th>Student</th>
+        <th>Amount</th>
+        <th>Date</th>
+        <th>View</th>
+      </tr>
+  `;
 
-    rows.forEach((x, i) => {
+    const slice = fullHistory.slice(0, historyIndex + PAGE_SIZE);
+    historyIndex = slice.length;
+
+    slice.forEach((x, i) => {
         html += `
-        <tr>
-          <td style="border:1px solid #ccc;padding:6px;">${i + 1}</td>
-          <td style="border:1px solid #ccc;padding:6px;">${x.name}</td>
-         <!-- <td style="border:1px solid #ccc;padding:6px;">${x.std}</td> -->
-          <td style="border:1px solid #ccc;padding:6px;">₹${x.amt}</td>
-         <!-- <td style="border:1px solid #ccc;padding:6px;">${x.for}</td> -->
-         <!-- <td style="border:1px solid #ccc;padding:6px;">${x.PaymentMode || "-"}</td> -->
-          <td style="border:1px solid #ccc;padding:6px;">${x.date}</td>
-          <td style="border:1px solid #ccc;padding:6px;text-align:center;">
-            ${
-              x.file
-              ? `<a href="https://raw.githubusercontent.com/ahmedfarook/BombayClasses/main/receipts/${x.file}"
-                    target="_blank"
-                    title="Open Receipt"
-                    class="open-icon">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                    <path d="M14 3H21V10" stroke="currentColor" stroke-width="2"/>
-                    <path d="M10 14L21 3" stroke="currentColor" stroke-width="2"/>
-                    <path d="M21 14V21H3V3H10" stroke="currentColor" stroke-width="2"/>
-                    </svg>
-                </a>`
-              : "-"
-            }
-          </td>
-        </tr>
-        `;
+      <tr>
+        <td>${i + 1}</td>
+        <td>${x.student}</td>
+        <td>₹${x.amount}</td>
+        <td>${x.date}</td>
+        <td>
+          <a href="https://bombay-classes-api.ahmedgaziyani.workers.dev/image/${x.id}"
+             <td class="icon-col">
+                <svg class="folder-icon" xmlns="http://www.w3.org/2000/svg"
+                    width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="1.8"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 7h5l2 3h11v9a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z"/>
+                </svg>
+            </td>
+        </td>
+      </tr>
+    `;
     });
 
-    html += `</tbody></table>`;
+    html += "</table>";
 
-    if(historyIndex < fullHistory.length){
+    if (historyIndex < fullHistory.length) {
         html += `
-        <button onclick="renderHistoryTable()"
+      <button onclick="renderHistory()"
         style="margin-top:10px;width:100%;padding:10px;
-        background:#111;color:#fff;border:none;
-        border-radius:8px;font-size:14px;cursor:pointer;">
+        background:#111;color:#fff;border:none;border-radius:8px;">
         Show More
-        </button>`;
+      </button>
+    `;
     }
 
     panel.innerHTML = html;
