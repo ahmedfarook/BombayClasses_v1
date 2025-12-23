@@ -22,6 +22,7 @@ function generate() {
         <div class="title">BOMBAY COACHING CLASSES</div>
         <div class="center small">G101, Ashiyana Complex, Adajan Patiya, Surat</div>
         <div class="center small">Contact: 9819484931</div>
+        <div class="receipt-title">FEES RECEIPT</div>
         <hr>
         <div class="line"><b>Date:</b> ${date}</div>
         <div class="line"><b>Student:</b> ${$("studentname").value}</div>

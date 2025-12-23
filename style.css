@@ -109,3 +109,11 @@ button {
     color: #000;
     transform: scale(1.15);
 }
+
+.receipt-title {
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    margin: 10px 0;
+    letter-spacing: 1px;
+}
