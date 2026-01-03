@@ -74,6 +74,7 @@ function generateAndUploadJPG() {
                 student: document.getElementById("studentname").value,
                 amount: document.getElementById("amount").value,
                 mode: document.getElementById("mode").value,
+                paymentfor: document.getElementById("paymentfor").value,
                 image: imageBase64
             })
         })
@@ -193,6 +194,7 @@ function renderHistory() {
 
     panel.innerHTML = html;
 }
+//================ AUTOCOMPLETE STUDENT NAME ========== //
 document.addEventListener("DOMContentLoaded", () => {
 
   const STUDENT_API = "https://studentdb.ahmedgaziyani.workers.dev/";
@@ -286,4 +288,19 @@ studentNameInput.addEventListener("input", () => {
 });
 
 
+
+document.addEventListener("DOMContentLoaded", () => {
+  const receivedByInput = document.getElementById("receivedby");
+
+  console.log("ReceivedBy input:", receivedByInput);
+
+  if (receivedByInput) {
+    receivedByInput.value = "Imran Sir";
+    receivedByInput.style.color = "#9ca3af"; // light grey
+
+    receivedByInput.addEventListener("input", () => {
+      receivedByInput.style.color = "#111827"; // dark on typing
+    });
+  }
+});
 

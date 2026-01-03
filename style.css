@@ -139,3 +139,7 @@ button {
 #studentSuggestions div:hover {
   background: #f0f0f0;
 }
+
+input.default-grey {
+  color: #9ca3af; /* light grey */
+}
