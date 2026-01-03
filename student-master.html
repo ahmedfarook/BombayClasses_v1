@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<script src="student-master.js"></script>
+<head>
+  <meta charset="UTF-8" />
+  <title>Student Master</title>
+  <style>
+    
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f4f8;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background: #2563eb;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    button:hover {
+      background: #1e4fd8;
+    }
+
+    table {
+      width: 100%;
+      margin-top: 30px;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+    }
+
+    th {
+      background: #f0f0f0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Student Master</h2>
+
+    <!-- Student Entry Form -->
+    <label>Student Name</label>
+    <input type="text" id="name" placeholder="Enter student name" />
+
+    <label>Standard (STD)</label>
+    <select id="std">
+      <option value="">Select STD</option>
+      <option>1st</option>
+      <option>2nd</option>
+      <option>3rd</option>
+      <option>4th</option>
+      <option>5th</option>
+      <option>6th</option>
+      <option>7th</option>
+      <option>8th</option>
+      <option>9th</option>
+      <option>10th</option>
+      <option>11th</option>
+      <option>12th</option>
+      <option>13th</option>
+      <option>14th</option>
+      <option>15th</option>
+    </select>
+
+    <button id="addStudentBtn">Add Student</button>
+
+    <!-- Student List -->
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>STD</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="studentList">
+        <!-- rows will come later -->
+      </tbody>
+    </table>
+  </div>
+
+</body>
+</html>

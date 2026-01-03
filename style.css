@@ -117,3 +117,25 @@ button {
     margin: 10px 0;
     letter-spacing: 1px;
 }
+
+#studentSuggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #ccc;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 999999;
+  display: none;
+}
+
+#studentSuggestions div {
+  padding: 8px 10px;
+  cursor: pointer;
+}
+
+#studentSuggestions div:hover {
+  background: #f0f0f0;
+}

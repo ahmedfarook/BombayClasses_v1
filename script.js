@@ -1,4 +1,8 @@
 const $ = id => document.getElementById(id);
+const suggestionsBox = document.getElementById("studentSuggestions");
+let activeIndex = -1;
+let currentMatches = [];
+
 
 /* ========= GENERATE RECEIPT ========= */
 
@@ -189,3 +193,97 @@ function renderHistory() {
 
     panel.innerHTML = html;
 }
+document.addEventListener("DOMContentLoaded", () => {
+
+  const STUDENT_API = "https://studentdb.ahmedgaziyani.workers.dev/";
+  let students = [];
+  let selectedStudentId = null;
+  let activeIndex = -1;
+  let currentMatches = [];
+
+  const studentNameInput = document.getElementById("studentname");
+  const stdInput = document.getElementById("standard");
+  const suggestionsBox = document.getElementById("studentSuggestions");
+
+  // ✅ 1️⃣ selectStudent pehle define
+  function selectStudent(student) {
+  studentNameInput.value = student.name;
+  stdInput.value = student.std;
+  selectedStudentId = student.id;
+
+  suggestionsBox.innerHTML = "";
+  suggestionsBox.style.display = "none";
+}
+
+
+  // load students
+  fetch(STUDENT_API)
+    .then(res => res.json())
+    .then(data => {
+      students = data;
+      console.log("Students ready:", students);
+    });
+
+  // input autocomplete
+studentNameInput.addEventListener("input", () => {
+  const value = studentNameInput.value.toLowerCase();
+  suggestionsBox.innerHTML = "";
+  activeIndex = -1;
+
+  if (!value) {
+    suggestionsBox.style.display = "none";
+    return;
+  }
+
+  currentMatches = students.filter(s =>
+    s.name.toLowerCase().includes(value)
+  );
+
+  if (!currentMatches.length) {
+    suggestionsBox.style.display = "none";
+    return;
+  }
+
+  suggestionsBox.style.display = "block";
+
+  currentMatches.forEach(student => {
+    const div = document.createElement("div");
+    div.textContent = `${student.name} — ${student.std}`;
+    div.onmousedown = () => selectStudent(student);
+    suggestionsBox.appendChild(div);
+  });
+});
+
+  // keyboard support
+  studentNameInput.addEventListener("keydown", (e) => {
+    const items = suggestionsBox.children;
+    if (!items.length) return;
+
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      activeIndex = (activeIndex + 1) % items.length;
+      highlight(items);
+    }
+
+    if (e.key === "ArrowUp") {
+      e.preventDefault();
+      activeIndex = (activeIndex - 1 + items.length) % items.length;
+      highlight(items);
+    }
+
+    if (e.key === "Enter" && activeIndex > -1) {
+      e.preventDefault();
+      selectStudent(currentMatches[activeIndex]);
+    }
+  });
+
+  function highlight(items) {
+    Array.from(items).forEach((el, i) => {
+      el.style.background = i === activeIndex ? "#e5e7eb" : "#fff";
+    });
+  }
+
+});
+
+
+

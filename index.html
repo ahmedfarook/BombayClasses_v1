@@ -22,7 +22,10 @@
         <h2>Fees Receipt</h2>
 
         <label>Student Name</label>
-        <input type="text" id="studentname">
+        <div style="position: relative;">
+        <input type="text" id="studentname" autocomplete="off" />
+        <div id="studentSuggestions"></div>
+        </div>
 
         <label>Amount (INR)</label>
         <input type="number" id="amount">
