@@ -50,11 +50,13 @@
         <option value="None" selected>None</option>
         <option value="1st Semester">1st Semester</option>
         <option value="2nd Semester">2nd Semester</option>
+        <option value="1st Instalment">1st Instalment</option>
+        <option value="2nd Instalment">2nd Instalment</option>
+        <option value="3rd Instalment">3rd Instalment</option>
+        <option value="4th Instalment">4th Instalment</option>
         <option value="Tuition Fees">Tuition Fees</option>
         <option value="Exam Fees">Exam Fees</option>
         </select>
-
-
 
         <label>Std</label>
         <input type="text" id="standard">
@@ -68,11 +70,15 @@
         </select>
 
         <label>Received By</label>
-        <input type="text" id="receivedby">
+        <select id="receivedby">
+            <option value="Imran Sir" selected>Imran Sir</option>
+            <option value="Fatima Miss">Fatima Miss</option>
+            <option value="3rd Party">3rd Party</option>
+        </select>
 
         <label>Note</label>
         <input type="text" id="note">
-
+        
         <div class="btn-row">
             <button onclick="generate()">Generate</button>
             <button id="jpgBtn" onclick="generateAndUploadJPG()">Download JPG</button>
