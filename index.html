@@ -77,8 +77,11 @@
         </select>
 
         <label>Note</label>
-        <input type="text" id="note">
-        
+        <input type="text" id="note" list="noteList">
+        <datalist id="noteList">
+        <option value="Full Payment Done">
+        </datalist>
+
         <div class="btn-row">
             <button onclick="generate()">Generate</button>
             <button id="jpgBtn" onclick="generateAndUploadJPG()">Download JPG</button>
